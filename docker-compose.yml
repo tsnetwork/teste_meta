@@ -1,0 +1,29 @@
+version: "3"
+services:
+    www:
+        build: ./srv
+        ports:
+        - "80:80"
+        - "443:443"
+        volumes:
+        - ./:/var/www/html/
+        links:
+        - db
+
+    db:
+        image: mysql:8.0
+        ports:
+        - "3306:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_DATABASE: abelhas_db
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+        - ./mysql:/docker-entrypoint-initdb.d
+        - ./mysql/config:/etc/mysql/conf.d
+        - persistent:/var/lib/mysql
+
+volumes:
+    persistent:
